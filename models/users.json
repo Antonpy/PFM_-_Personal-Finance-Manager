@@ -1,0 +1,16 @@
+[
+  {
+    "user_id": "2dd32ac9-d9d3-4f9e-b375-4020b6a4215e",
+    "email": "anton.goguev@gmail.com",
+    "password_alg": "pbkdf2_sha256",
+    "password_iterations": 310000,
+    "password_salt_hex": "a1838fc6a615296830c0d39637f755d9",
+    "password_hash_hex": "31e98fe568fe188a6b556228ebc871e214d3f6292943c7c33d1b7ce6bcfc1f84",
+    "encryption_kdf": "pbkdf2_sha256",
+    "encryption_iterations": 210000,
+    "encryption_salt_hex": "2def6e76c705e7bb2dff176641a503f4",
+    "created_at": "2026-03-12T22:01:09.958467+00:00",
+    "consent_pii_storage": true,
+    "consent_at": "2026-03-12T22:08:30.885345+00:00"
+  }
+]

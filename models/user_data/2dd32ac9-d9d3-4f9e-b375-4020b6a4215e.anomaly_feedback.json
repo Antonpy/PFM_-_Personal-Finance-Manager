@@ -1,0 +1,190 @@
+[
+  {
+    "transaction_id": "transactions_1.csv:1",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -2350,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Пятёрочка"
+    },
+    "updated_at": "2026-03-12T22:53:48.216832+00:00"
+  },
+  {
+    "transaction_id": "transactions_1.csv:4",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -1299,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Netflix"
+    },
+    "updated_at": "2026-03-12T22:03:26.995717+00:00"
+  },
+  {
+    "transaction_id": "transactions_1.csv:5",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -320,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Starbucks"
+    },
+    "updated_at": "2026-03-12T22:03:35.113144+00:00"
+  },
+  {
+    "transaction_id": "transactions_1.csv:6",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -1850,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "McDonalds"
+    },
+    "updated_at": "2026-03-12T22:03:40.844186+00:00"
+  },
+  {
+    "transaction_id": "transactions_1.csv:8",
+    "verdict": "ok",
+    "reasons": [
+      "high_amount>5193",
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -5200,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Wildberries"
+    },
+    "updated_at": "2026-03-12T22:03:46.473152+00:00"
+  },
+  {
+    "transaction_id": "transactions_1.csv:9",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -999,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Spotify"
+    },
+    "updated_at": "2026-03-12T22:03:50.631760+00:00"
+  },
+  {
+    "transaction_id": "transactions_1.csv:10",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "source::__all__::RUB",
+      "amount_column": "amount",
+      "amount_minor": -2400,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Лента"
+    },
+    "updated_at": "2026-03-12T22:03:54.036284+00:00"
+  },
+  {
+    "transaction_id": "TXN-0001",
+    "verdict": "fraud",
+    "reasons": [
+      "high_amount>22068"
+    ],
+    "comment": "Кража денег, под видом списания за жильё",
+    "context": {
+      "scope": "base::__all__::EUR",
+      "amount_column": "amount_base",
+      "amount_minor": -38889,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Landlord"
+    },
+    "updated_at": "2026-03-13T19:45:43.608935+00:00"
+  },
+  {
+    "transaction_id": "TXN-0002",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "base::__all__::EUR",
+      "amount_column": "amount_base",
+      "amount_minor": -511,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Пятёрочка"
+    },
+    "updated_at": "2026-03-13T19:45:54.465256+00:00"
+  },
+  {
+    "transaction_id": "TXN-0003",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "base::__all__::EUR",
+      "amount_column": "amount_base",
+      "amount_minor": -1443,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Netflix"
+    },
+    "updated_at": "2026-03-13T19:45:58.431445+00:00"
+  },
+  {
+    "transaction_id": "TXN-0004",
+    "verdict": "ok",
+    "reasons": [
+      "rare_merchant"
+    ],
+    "comment": "",
+    "context": {
+      "scope": "base::__all__::EUR",
+      "amount_column": "amount_base",
+      "amount_minor": -722,
+      "currency": "RUB",
+      "country": "",
+      "merchant": "Яндекс Go"
+    },
+    "updated_at": "2026-03-13T19:46:04.915755+00:00"
+  }
+]

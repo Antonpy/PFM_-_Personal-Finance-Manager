@@ -1,0 +1,121 @@
+date,amount,currency,merchant,description,account,transaction_id
+2026-01-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0001
+2026-01-03,-459.50,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0002
+2026-01-05,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0003
+2026-01-07,-650.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0004
+2026-01-09,-1500.00,RUB,Лукойл,Fuel,Card ****5678,TXN-0005
+2026-01-10,85000.00,RUB,Employer,Salary,Main account,TXN-0006
+2026-01-12,-2490.00,RUB,Wildberries,Online shopping,Card ****1234,TXN-0007
+2026-01-15,-299.00,RUB,Starbucks,Coffee,Card ****1234,TXN-0008
+2026-01-18,-1200.00,RUB,МТС,Mobile bill,Card ****5678,TXN-0009
+2026-01-22,-590.00,RUB,Spotify,Subscription,Card ****1234,TXN-0010
+2026-02-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0011
+2026-02-02,-520.00,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0012
+2026-02-04,-1299.00,RUB,YouTube,Subscription,Card ****1234,TXN-0013
+2026-02-06,-780.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0014
+2026-02-08,-4300.00,RUB,РЖД,Train tickets,Card ****5678,TXN-0015
+2026-02-10,85000.00,RUB,Employer,Salary,Main account,TXN-0016
+2026-02-11,-5200.00,RUB,Лента,Groceries,Card ****1234,TXN-0017
+2026-02-14,-8990.00,RUB,М.Видео,Electronics,Card ****5678,TXN-0018
+"2026-02-20,-249.00,RUB,Кафе ""Супер"",Lunch,Card ****1234,TXN-0019"
+2026-02-25,-599.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0020
+2026-03-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0021
+2026-03-03,-675.50,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0022
+2026-03-05,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0023
+2026-03-06,-1200.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0024
+2026-03-07,-15000.00,RUB,Ozon,Big purchase,Card ****5678,TXN-0025
+2026-03-10,85000.00,RUB,Employer,Salary,Main account,TXN-0026
+2026-03-11,-320.00,RUB,Starbucks,Coffee,Card ****1234,TXN-0027
+2026-03-14,-1790.00,RUB,Доставка,Food delivery,Card ****1234,TXN-0028
+2026-03-18,-1290.00,RUB,Яндекс Плюс,Subscription bundle,Card ****1234,TXN-0029
+2026-03-22,-299.00,RUB,Spotify,Subscription,Card ****1234,TXN-0030
+2026-04-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0031
+2026-04-02,-489.00,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0032
+2026-04-04,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0033
+2026-04-06,-720.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0034
+2026-04-09,-4200.00,RUB,Shell,Fuel,Card ****5678,TXN-0035
+2026-04-10,85000.00,RUB,Employer,Salary,Main account,TXN-0036
+2026-04-12,-4590.00,RUB,Wildberries,Clothes,Card ****1234,TXN-0037
+"2026-04-15,-350.00,RUB,Кофейня ""Два"",Coffee,Card ****1234,TXN-0038"
+2026-04-19,-1200.00,RUB,МТС,Mobile bill,Card ****5678,TXN-0039
+2026-04-24,-1299.00,RUB,YouTube,Subscription,Card ****1234,TXN-0040
+2026-05-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0041
+2026-05-03,-530.00,RUB,Магнит,Groceries,Card ****1234,TXN-0042
+2026-05-05,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0043
+2026-05-07,-880.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0044
+2026-05-08,-15000.00,RUB,Мебельный салон,Furniture,Card ****5678,TXN-0045
+2026-05-10,85000.00,RUB,Employer,Salary,Main account,TXN-0046
+2026-05-13,-2790.00,RUB,Ремонт техника,Appliance repair,Card ****5678,TXN-0047
+"2026-05-16,-199.00,RUB,Кафе ""Лёгкий"",Snack,Card ****1234,TXN-0048"
+2026-05-20,-599.00,RUB,Spotify,Subscription,Card ****1234,TXN-0049
+2026-05-25,-3200.00,RUB,Стоматология,Doctor,Card ****5678,TXN-0050
+2026-06-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0051
+2026-06-02,-610.00,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0052
+2026-06-04,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0053
+2026-06-06,-730.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0054
+2026-06-08,-5400.00,RUB,РЖД,Train tickets,Card ****5678,TXN-0055
+2026-06-10,85000.00,RUB,Employer,Salary,Main account,TXN-0056
+2026-06-12,-4200.00,RUB,Wildberries,Online shopping,Card ****1234,TXN-0057
+2026-06-15,-410.00,RUB,Starbucks,Coffee,Card ****1234,TXN-0058
+2026-06-19,-1299.00,RUB,YouTube,Subscription,Card ****1234,TXN-0059
+"2026-06-22,-2590.00,RUB,АЗС ""Газпром"",Fuel,Card ****5678,TXN-0060"
+2026-07-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0061
+2026-07-03,-479.00,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0062
+2026-07-05,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0063
+2026-07-06,-880.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0064
+2026-07-09,-15900.00,RUB,Avia,S7 flight,Card ****5678,TXN-0065
+2026-07-10,85000.00,RUB,Employer,Salary,Main account,TXN-0066
+2026-07-13,-1990.00,RUB,Аптека,Pharmacy,Card ****1234,TXN-0067
+2026-07-16,-3490.00,RUB,Сервис авто,Car service,Card ****5678,TXN-0068
+2026-07-20,-599.00,RUB,Spotify,Subscription,Card ****1234,TXN-0069
+2026-07-24,-1299.00,RUB,Яндекс Плюс,Subscription bundle,Card ****1234,TXN-0070
+2026-08-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0071
+2026-08-02,-520.00,RUB,Лента,Groceries,Card ****1234,TXN-0072
+2026-08-04,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0073
+2026-08-06,-720.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0074
+2026-08-08,-12500.00,RUB,Ozon,Electronics,Card ****5678,TXN-0075
+2026-08-10,85000.00,RUB,Employer,Salary,Main account,TXN-0076
+"2026-08-12,-430.00,RUB,Кофейня ""Стар"",Coffee,Card ****1234,TXN-0077"
+2026-08-15,-2990.00,RUB,Ремонт дом,House repair,Card ****5678,TXN-0078
+2026-08-18,-1299.00,RUB,YouTube,Subscription,Card ****1234,TXN-0079
+"2026-08-22,-199.00,RUB,Кафе ""Уют"",Lunch,Card ****1234,TXN-0080"
+2026-09-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0081
+2026-09-03,-489.00,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0082
+2026-09-05,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0083
+2026-09-07,-760.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0084
+2026-09-09,-5400.00,RUB,Shell,Fuel,Card ****5678,TXN-0085
+2026-09-10,85000.00,RUB,Employer,Salary,Main account,TXN-0086
+2026-09-13,-4590.00,RUB,Wildberries,Clothes,Card ****1234,TXN-0087
+2026-09-16,-1299.00,RUB,Яндекс Плюс,Subscription bundle,Card ****1234,TXN-0088
+2026-09-19,-350.00,RUB,Starbucks,Coffee,Card ****1234,TXN-0089
+2026-09-23,-2400.00,RUB,Стоматология,Dental,Card ****5678,TXN-0090
+2026-10-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0091
+2026-10-03,-520.00,RUB,Магнит,Groceries,Card ****1234,TXN-0092
+2026-10-05,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0093
+2026-10-07,-820.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0094
+2026-10-10,85000.00,RUB,Employer,Salary,Main account,TXN-0095
+2026-10-12,-14990.00,RUB,М.Видео,Appliances,Card ****5678,TXN-0096
+"2026-10-15,-220.00,RUB,Кафе ""Точка"",Coffee,Card ****1234,TXN-0097"
+2026-10-18,-1299.00,RUB,YouTube,Subscription,Card ****1234,TXN-0098
+2026-10-21,-1990.00,RUB,Аптека,Pharmacy,Card ****1234,TXN-0099
+2026-10-25,-599.00,RUB,Spotify,Subscription,Card ****1234,TXN-0100
+2026-11-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0101
+2026-11-04,-470.00,RUB,Пятёрочка,Groceries,Card ****1234,TXN-0102
+2026-11-06,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0103
+2026-11-08,-760.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0104
+2026-11-10,85000.00,RUB,Employer,Salary,Main account,TXN-0105
+2026-11-12,-5200.00,RUB,Лента,Groceries,Card ****1234,TXN-0106
+2026-11-15,-7990.00,RUB,Ozon,Shopping,Card ****5678,TXN-0107
+2026-11-18,-1299.00,RUB,Яндекс Плюс,Subscription bundle,Card ****1234,TXN-0108
+2026-11-20,-299.00,RUB,Starbucks,Coffee,Card ****1234,TXN-0109
+2026-11-24,-4500.00,RUB,Сервис авто,Car repairs,Card ****5678,TXN-0110
+2026-12-01,-35000.00,RUB,Landlord,Rent,Main account,TXN-0111
+2026-12-02,-599.00,RUB,Магнит,Groceries,Card ****1234,TXN-0112
+2026-12-04,-1299.00,RUB,Netflix,Monthly subscription,Card ****1234,TXN-0113
+2026-12-06,-880.00,RUB,Яндекс Go,Taxi,Card ****1234,TXN-0114
+2026-12-08,-24900.00,RUB,Магазин бытовой,New TV,Card ****5678,TXN-0115
+2026-12-10,85000.00,RUB,Employer,Salary,Main account,TXN-0116
+"2026-12-12,-299.00,RUB,Кафе ""Зима"",Coffee,Card ****1234,TXN-0117"
+2026-12-15,-1299.00,RUB,YouTube,Subscription,Card ****1234,TXN-0118
+2026-12-18,-3200.00,RUB,Подарки,Holiday gifts,Card ****5678,TXN-0119
+2026-12-24,-599.00,RUB,Spotify,Subscription,Card ****1234,TXN-0120
