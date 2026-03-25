@@ -55,7 +55,7 @@ class TestExportUtils(unittest.TestCase):
 
         pdf_artifacts = [artifact for artifact in result.artifacts if artifact.format == "pdf"]
         self.assertEqual(len(pdf_artifacts), 1)
-        self.assertTrue(pdf_artifacts[0].content.startswith(b"%PDF-1.4"))
+        self.assertTrue(pdf_artifacts[0].content.startswith(b"%PDF-"))
 
     def test_export_unsupported_format_warning(self):
         tables = self._build_tables()

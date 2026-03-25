@@ -5,6 +5,9 @@ import re
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from typing import Any
+import pdfplumber
+import re
+import logging
 
 import pandas as pd
 
@@ -156,10 +159,191 @@ def _read_uploaded_bytes(uploaded_file: Any) -> bytes | None:
         LOGGER.exception("Не удалось прочитать бинарное содержимое uploaded_file")
         return None
 
+def _parse_sberbank_pdf(pdf_bytes: bytes) -> pd.DataFrame | None:
+    """
+    Парсит PDF-выписку Сбера и извлекает транзакции.
+
+    Алгоритм:
+    1. Читает все страницы PDF, объединяя текст в одну строку.
+    2. Разбивает на строки, удаляя служебные (номера страниц, заголовки).
+    3. Последовательно ищет строки, соответствующие шаблону начала транзакции:
+        дата, время, код авторизации.
+    4. В той же строке ищет сумму (может быть с плюсом).
+    5. Категорией считает текст между кодом авторизации и суммой.
+    6. Описание собирает со следующих строк до следующей строки, начинающейся с даты.
+    7. Очищает описание от служебных фраз (например, "Продолжение на следующей странице").
+    8. Определяет знак суммы: если есть "+" или ключевые слова "Перевод на карту", "Возврат покупки" и т.д., сумма положительная, иначе отрицательная.
+    9. Переводит сумму в minor units (копейки).
+    10. Извлекает продавца (merchant):
+        - Для переводов ищет полное имя по шаблону "Перевод от И. Имя Фамилия".
+        - В общем случае берёт первые слова до точки или запятой.
+    11. Сохраняет дату, сумму, валюту (RUB), продавца, описание и категорию.
+    12. Возвращает DataFrame с колонками: date, amount, currency, merchant, description, category.
+
+    Параметры:
+        pdf_bytes (bytes): Содержимое PDF-файла в виде байтов.
+
+    Возвращает:
+        pd.DataFrame | None: DataFrame с извлечёнными транзакциями или None в случае ошибки.
+    """
+
+    all_transactions = []
+    try:
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            full_text = ''
+            for page in pdf.pages:
+                text = page.extract_text()
+                if text:
+                    full_text += text + '\n'
+
+        lines = full_text.split('\n')
+        # фильтруем строки
+        lines = [l.strip() for l in lines if l.strip() and not any(x in l for x in ['Страница', 'Выписка по платёжному счёту', 'Для проверки', '1. Зайдите', '2. Нажмите', '3. Получите', 'Продолжение на следующей странице'])]
+
+        i = 0
+        tx_pattern = re.compile(r'(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2})\s+(\d+)\s+')
+        while i < len(lines):
+            line = lines[i]
+            match = tx_pattern.search(line)
+            if not match:
+                i += 1
+                continue
+
+            date_str = match.group(1)
+            rest = line[match.end():].strip()
+
+            # Ищем сумму
+            amount_match = re.search(r'(\+?[\d\s]+,\d{2})', rest)
+            if not amount_match:
+                i += 1
+                continue
+            amount_str = amount_match.group(1)
+            amount_str_clean = amount_str.replace(' ', '').replace(',', '.').lstrip('+')
+            try:
+                amount = float(amount_str_clean)
+            except ValueError:
+                i += 1
+                continue
+
+            # Категория — всё до суммы (оставляем как есть)
+            category = rest[:amount_match.start()].strip()
+
+            # Описание: следующие строки до следующей транзакции
+            desc_parts = []
+            j = i + 1
+            while j < len(lines):
+                next_line = lines[j]
+                if tx_pattern.search(next_line):
+                    break
+                if next_line:
+                    desc_parts.append(next_line)
+                j += 1
+            description = ' '.join(desc_parts).strip()
+
+            if not description:
+                after_amount = rest[amount_match.end():].strip()
+                description = after_amount
+
+            # Очистка описания от служебных фраз
+            cleanup_phrases = [
+                'Продолжение на следующей странице',
+                'Для проверки подлинности документа',
+                'Действителен до',
+                'ДАТА ОПЕРАЦИИ (МСК)',
+                'Дата обработки',
+                'Описание операции',
+                'Сумма в валюте операции',
+            ]
+            for phrase in cleanup_phrases:
+                if phrase in description:
+                    description = description.split(phrase)[0].strip()
+
+            merchant_part = ''
+            if 'Операция по карте' in description:
+                parts = description.split('Операция по карте')
+                merchant_part = parts[0].strip()
+                description = 'Операция по карте' + parts[1].strip()
+            elif 'Операция по счету' in description:
+                parts = description.split('Операция по счету')
+                merchant_part = parts[0].strip()
+                description = 'Операция по счету' + parts[1].strip()
+            else:
+                merchant_part = description
+                description = ''
+
+            # Очищаем merchant от лишних пробелов и возможных дат
+            if merchant_part:
+                merchant_part = re.sub(r'^\d{2}\.\d{2}\.\d{4}\s+', '', merchant_part)
+                merchant = merchant_part.strip()
+            else:
+                merchant = 'Unknown'
+
+            # Определяем знак
+            has_plus = '+' in amount_str
+            if has_plus or any(word in description for word in ['Перевод на карту', 'Перевод от', 'Возврат покупки', 'Пополнение', 'Поступление']):
+                amount = abs(amount)
+            else:
+                amount = -abs(amount)
+
+            amount_minor = int(round(amount * 100))
+
+            try:
+                date = pd.to_datetime(date_str, format='%d.%m.%Y %H:%M', errors='coerce', utc=True)
+            except Exception:
+                date = pd.NaT
+
+            # Извлечение merchant
+            #merchant = ''
+            # Специальная обработка для переводов – захватываем полное имя
+            #transfer_match = re.search(r'Перевод (?:от|для)\s+([А-Я][а-я]?\.\s+[А-Я][а-я]+\s+[А-Я][а-я]+\.?)', description)
+            #if transfer_match:
+            #    merchant = transfer_match.group(1).strip().rstrip('.')
+            #else:
+                # Общий случай: первая часть описания без даты
+            #    desc_clean = re.sub(r'^\d{2}\.\d{2}\.\d{4}\s+', '', description)
+            #    match_merchant = re.match(r'([^.,]+)', desc_clean)
+            #    if match_merchant:
+            #        merchant = match_merchant.group(1).strip()
+            #    if not merchant:
+            #        words = description.split()
+            #        merchant = ' '.join(words[:3]) if len(words) >= 3 else description
+
+            all_transactions.append({
+                'date': date,
+                'amount': amount_minor,
+                'currency': 'RUB',
+                'merchant': merchant,
+                'description': description,
+                'category': category,
+            })
+
+            i = j
+
+    except Exception as e:
+        logging.exception("Ошибка парсинга PDF Сбера: %s", e)
+        return None
+
+    if not all_transactions:
+        return None
+    return pd.DataFrame(all_transactions)
 
 def _read_dataframe(raw: bytes, filename: str) -> tuple[pd.DataFrame | None, dict[str, Any], Exception | None]:
     lower_name = (filename or "").lower()
     read_meta: dict[str, Any] = {"detected_format": "unknown"}
+
+    # --- Проверка на PDF ---
+    # Если имя заканчивается на .pdf или файл начинается с %PDF
+    if lower_name.endswith(".pdf") or (len(raw) >= 4 and raw[:4] == b'%PDF'):
+        try:
+            import pdfplumber  # локальный импорт на случай отсутствия
+        except ImportError:
+            return None, read_meta, ImportError("Библиотека pdfplumber не установлена")
+        df = _parse_sberbank_pdf(raw)
+        if df is not None:
+            read_meta["detected_format"] = "pdf_sber"
+            return df, read_meta, None
+        else:
+            return None, read_meta, ValueError("Не удалось распознать PDF‑выписку (возможно, не Сбера или формат не поддерживается)")
 
     is_excel = lower_name.endswith((".xlsx", ".xls", ".xlsm")) or raw[:2] == b"PK"
     if is_excel:

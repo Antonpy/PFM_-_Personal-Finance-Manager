@@ -1,6 +1,8 @@
+pdfplumber>=0.10.0
 reportlab
 altair
 pandas>=2.2,<3.0
 streamlit>=1.36,<2.0
 cryptography>=46.0.5,<47.0
 openpyxl>=3.1,<4.0
+xlsxwriter>=3.2,<4.0

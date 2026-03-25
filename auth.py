@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from i18n import tr
+from secure_store import DEFAULT_USER_DATA_DIR, decrypt_dataframe, encrypt_dataframe
 
 
 DEFAULT_USERS_PATH = Path("models") / "users.json"
@@ -22,7 +23,7 @@ PASSWORD_MIN_LENGTH = 10
 
 @dataclass(frozen=True)
 class AuthResult:
-    """Результат попытки регистрации или входа пользователя."""
+    """Результат попытки регистрации, входа или управления аккаунтом."""
 
     success: bool
     message: str
@@ -122,6 +123,32 @@ def _find_user_by_id(users: list[dict[str, Any]], user_id: str) -> dict[str, Any
     return None
 
 
+def _derive_encryption_key_from_record(record: dict[str, Any], password: str) -> bytes | None:
+    try:
+        encryption_salt = bytes.fromhex(str(record.get("encryption_salt_hex", "")))
+        encryption_iterations = int(record.get("encryption_iterations", ENCRYPTION_KEY_ITERATIONS))
+    except (TypeError, ValueError):
+        return None
+
+    if not encryption_salt:
+        return None
+
+    return hashlib.pbkdf2_hmac(
+        "sha256",
+        str(password).encode("utf-8"),
+        encryption_salt,
+        encryption_iterations,
+        dklen=32,
+    )
+
+
+def _user_encrypted_payload_path(user_id: str, encrypted_data_dir: str | Path) -> Path:
+    normalized_id = str(user_id or "").strip()
+    root = Path(encrypted_data_dir)
+    root.mkdir(parents=True, exist_ok=True)
+    return root / f"{normalized_id}.transactions.enc.json"
+
+
 def register_user(
     email: str,
     password: str,
@@ -207,6 +234,110 @@ def login_user(
     )
 
 
+def change_user_password(
+    user_id: str,
+    old_password: str,
+    new_password: str,
+    users_path: str | Path = DEFAULT_USERS_PATH,
+    encrypted_data_dir: str | Path = DEFAULT_USER_DATA_DIR,
+    language: str = "ru",
+) -> AuthResult:
+    """Безопасно меняет пароль и перешифровывает пользовательские данные новым ключом."""
+    normalized_id = str(user_id or "").strip()
+    if not normalized_id:
+        return AuthResult(success=False, message=tr("secure.invalid_user_id", language))
+
+    users = load_users(users_path)
+    existing = _find_user_by_id(users, normalized_id)
+    if existing is None:
+        return AuthResult(success=False, message=tr("auth.user_not_found", language))
+
+    if str(existing.get("password_alg", "")).strip().lower() != "pbkdf2_sha256":
+        return AuthResult(success=False, message=tr("auth.unsupported_account_format", language))
+
+    try:
+        password_iterations = int(existing.get("password_iterations", PBKDF2_ITERATIONS))
+        password_salt = bytes.fromhex(str(existing.get("password_salt_hex", "")))
+        password_hash = bytes.fromhex(str(existing.get("password_hash_hex", "")))
+    except (TypeError, ValueError):
+        return AuthResult(success=False, message=tr("auth.account_data_corrupted", language))
+
+    old_password_hash = _hash_password(password=old_password, salt=password_salt, iterations=password_iterations)
+    if not hmac.compare_digest(password_hash, old_password_hash):
+        return AuthResult(success=False, message=tr("auth.wrong_password", language))
+
+    if old_password == new_password:
+        return AuthResult(success=False, message=tr("auth.new_password_must_differ", language))
+
+    password_ok, password_message = validate_password_policy(new_password, language=language)
+    if not password_ok:
+        return AuthResult(success=False, message=password_message)
+
+    old_encryption_key = _derive_encryption_key_from_record(existing, old_password)
+    if old_encryption_key is None:
+        return AuthResult(success=False, message=tr("auth.account_data_corrupted", language))
+
+    payload_path = _user_encrypted_payload_path(normalized_id, encrypted_data_dir=encrypted_data_dir)
+    has_encrypted_payload = payload_path.exists()
+    payload_backup: bytes | None = payload_path.read_bytes() if has_encrypted_payload else None
+
+    decrypted_dataframe = None
+    if has_encrypted_payload:
+        decrypt_result = decrypt_dataframe(
+            user_id=normalized_id,
+            encryption_key=old_encryption_key,
+            base_dir=encrypted_data_dir,
+            language=language,
+        )
+        if not decrypt_result.success or decrypt_result.dataframe is None:
+            return AuthResult(success=False, message=tr("auth.password_change_decrypt_failed", language))
+        decrypted_dataframe = decrypt_result.dataframe
+
+    new_password_salt = secrets.token_bytes(16)
+    new_password_hash = _hash_password(password=new_password, salt=new_password_salt, iterations=PBKDF2_ITERATIONS)
+
+    new_encryption_salt = secrets.token_bytes(16)
+    new_encryption_key = hashlib.pbkdf2_hmac(
+        "sha256",
+        str(new_password).encode("utf-8"),
+        new_encryption_salt,
+        ENCRYPTION_KEY_ITERATIONS,
+        dklen=32,
+    )
+
+    if has_encrypted_payload and decrypted_dataframe is not None:
+        encrypt_result = encrypt_dataframe(
+            dataframe=decrypted_dataframe,
+            user_id=normalized_id,
+            encryption_key=new_encryption_key,
+            base_dir=encrypted_data_dir,
+            language=language,
+        )
+        if not encrypt_result.success:
+            return AuthResult(success=False, message=tr("auth.password_change_reencrypt_failed", language))
+
+    existing["password_alg"] = "pbkdf2_sha256"
+    existing["password_iterations"] = PBKDF2_ITERATIONS
+    existing["password_salt_hex"] = new_password_salt.hex()
+    existing["password_hash_hex"] = new_password_hash.hex()
+    existing["encryption_kdf"] = "pbkdf2_sha256"
+    existing["encryption_iterations"] = ENCRYPTION_KEY_ITERATIONS
+    existing["encryption_salt_hex"] = new_encryption_salt.hex()
+
+    try:
+        _save_users(users, users_path)
+    except Exception:  # noqa: BLE001
+        if payload_backup is not None:
+            payload_path.write_bytes(payload_backup)
+        return AuthResult(success=False, message=tr("auth.password_change_persist_failed", language))
+
+    return AuthResult(
+        success=True,
+        message=tr("auth.password_change_success", language),
+        user=_public_user_record(existing),
+    )
+
+
 def derive_user_encryption_key(
     user_id: str,
     password: str,
@@ -222,19 +353,7 @@ def derive_user_encryption_key(
     if user is None:
         return None
 
-    try:
-        encryption_salt = bytes.fromhex(str(user.get("encryption_salt_hex", "")))
-        encryption_iterations = int(user.get("encryption_iterations", ENCRYPTION_KEY_ITERATIONS))
-    except (TypeError, ValueError):
-        return None
-
-    return hashlib.pbkdf2_hmac(
-        "sha256",
-        str(password).encode("utf-8"),
-        encryption_salt,
-        encryption_iterations,
-        dklen=32,
-    )
+    return _derive_encryption_key_from_record(user, password)
 
 
 def get_user_by_id(user_id: str, users_path: str | Path = DEFAULT_USERS_PATH) -> dict[str, Any] | None:
